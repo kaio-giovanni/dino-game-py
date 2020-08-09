@@ -7,6 +7,7 @@
 
 ''' IMPORTANDO MODULOS'''
 import pygame as pg
+import random
 from functions import *
 from Dino import Dino
 from Underground import Underground
@@ -16,6 +17,7 @@ from Cactus import Cactus
 BG_COLOR = pg.Color(250, 250, 250, 255)
 SCREEN_W = 700
 SCREEN_H = 300
+RANGE_CACTUS = range(-1200, -100, 150)
 
 ''' CRIA UM OBJ RECT COM O TAMANHO DA TELA'''
 SCREEN = pg.Rect(0, 0, SCREEN_W, SCREEN_H)
@@ -61,10 +63,6 @@ def main(surface):
 
         container_all.clear(surface, bg_screen)
         container_all.update()
-        
-        ##################    TESTE   ###########################
-        player.teste(surface)
-        ##################    TESTE   ###########################
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -74,7 +72,7 @@ def main(surface):
 
                 if keys[pg.K_ESCAPE]:
                     quit_game()
-                elif keys[pg.K_SPACE]:
+                elif keys[pg.K_SPACE] or keys[pg.K_UP]:
                     player.jump()
                 elif keys[pg.K_DOWN]:
                     player.run_down()
@@ -87,8 +85,14 @@ def main(surface):
         elif not (player.action == player.actions[0]): 
             container_all.add(underground1, underground2)
                 
+            for mUnder in container_underground.sprites():
+                if mUnder.rect.x in RANGE_CACTUS:
+                    cactu = Cactus((random.randrange(-1200, -100, 150) * -1) + SCREEN_W)
+                    container_all.add(cactu)
+
             for mCactu in pg.sprite.spritecollide(player, container_cactus, False):
-                player.collide()
+                #player.collide()
+                pass
 
         dirty = container_all.draw(surface)
         pg.display.update(dirty)

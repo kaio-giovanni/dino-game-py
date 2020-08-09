@@ -4,10 +4,6 @@
 
 import pygame as pg
 
-#############################################
-COLOR_TESTE = pg.Color(255, 255, 10, 10)
-#############################################
-
 class Dino(pg.sprite.Sprite):
     jump_value = 12
     actions = { 0: "stoped",
@@ -27,7 +23,7 @@ class Dino(pg.sprite.Sprite):
                         4: pg.Rect(980, 1, 46, 49),
                         5: pg.Rect(1024, 1, 46, 49),
                         6: pg.Rect(1111, 18, 60, 32),
-                        7: pg.Rect(1171, 19, 60, 32)
+                        7: pg.Rect(1171, 18, 60, 32)
                       }
         self.index_states = 0
         self.sheet.set_clip(self.states[self.index_states])
@@ -45,7 +41,7 @@ class Dino(pg.sprite.Sprite):
 
         elif self.action == self.actions[2]: #run down
             self.rect.y = self.pos_ground + 17
-            
+
         elif self.action == self.actions[3]: #jumping
             self.rect.y -= int(self.jump_value)
             self.jump_value -= 0.7
@@ -69,7 +65,7 @@ class Dino(pg.sprite.Sprite):
             self.image = self.sheet.subsurface(self.sheet.get_clip())
 
         elif self.action == self.actions[2]: # run down
-            self.index_states = self.get_index(6,7)
+            self.index_states = self.get_index(6,7.7)
             self.sheet.set_clip(self.states[int(self.index_states)])
             self.image = self.sheet.subsurface(self.sheet.get_clip())            
 
@@ -112,9 +108,3 @@ class Dino(pg.sprite.Sprite):
         else:
             self.index_states += 0.2
         return self.index_states
-
-    ##################    TESTE   ###########################
-    def teste(self, surface): 
-        pg.draw.rect(surface, COLOR_TESTE, self.rect)
-    ##################    TESTE   ###########################
-        
