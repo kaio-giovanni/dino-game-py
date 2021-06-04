@@ -37,7 +37,7 @@ def get_info_display():
 ''' FUNÇÃO PARA CARREGAR IMAGENS EM DISCO'''
 def carregar_imagem(pasta,nome_imagem):
     ''' Carrega uma imagem na memória'''
-    nome = os.path.join(pasta, nome_imagem)
+    nome = os.path.join(os.path.curdir, pasta, nome_imagem)
     ''' os.path.join -> Faz a junção (join) de paths até formar um caminho completo. "Images" é o nome da pasta de imagens '''
     try:
         imagem = pg.image.load(nome)
