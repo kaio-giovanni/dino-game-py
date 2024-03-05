@@ -5,6 +5,7 @@
 import pygame as pg
 import random
 
+
 class Cactus(pg.sprite.Sprite):
 
     def __init__(self, posX):
@@ -20,7 +21,7 @@ class Cactus(pg.sprite.Sprite):
             6: pg.Rect(381, 2, 28, 50),
             7: pg.Rect(430, 2, 52, 50)
         }
-        self.sheet.set_clip(self.states[random.choice([0,1,2,3,4,5,6,7])])
+        self.sheet.set_clip(self.states[random.choice([0, 1, 2, 3, 4, 5, 6, 7])])
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.rect = self.image.get_rect().move(posX, self.pos_ground)
         self.position = posX, self.pos_ground
@@ -29,16 +30,16 @@ class Cactus(pg.sprite.Sprite):
         print("Cactu is dead")
 
     def update(self):
-        if self.rect.height == 36: 
+        if self.rect.height == 36:
             self.rect.y = self.pos_ground + 14
         else:
             self.rect.y = self.pos_ground
-            
+
         self.rect.move_ip(self.speed, 0)
         self.position = self.rect.x, self.rect.y
 
         if self.rect.x <= 0:
             self.kill()
-        
+
     def getPos(self):
         return self.position

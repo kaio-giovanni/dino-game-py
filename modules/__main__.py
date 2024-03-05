@@ -6,12 +6,13 @@
 #############################################
 
 ''' IMPORTANDO MODULOS'''
-import pygame as pg
 import random
-from functions import *
-from Dino import Dino
-from Underground import Underground
-from Cactus import Cactus
+import time
+
+from .Cactus import Cactus
+from .Dino import Dino
+from .Underground import Underground
+from .functions import *
 
 ''' VARIAVEIS GLOBAIS'''
 BG_COLOR = pg.Color(250, 250, 250, 255)
@@ -23,8 +24,9 @@ RANGE_CACTUS = range(-1200, -100, 150)
 SCREEN = pg.Rect(0, 0, SCREEN_W, SCREEN_H)
 
 ''' FUNÇÃO PRINCIPAL '''
-def main(surface):
 
+
+def main(surface):
     surface.fill(BG_COLOR)
     sprite_sheet = carregar_imagem("assets", "sprite-sheet.png")
     bg_screen = pg.Surface(SCREEN.size)
@@ -42,9 +44,9 @@ def main(surface):
     Cactus.imagem = sprite_sheet[0]
     Dino.imagem = sprite_sheet[0]
 
-    Cactus.pos_ground = SCREEN.bottom - 76 
+    Cactus.pos_ground = SCREEN.bottom - 76
     Dino.pos_ground = SCREEN.bottom - 76
-    
+
     Dino.containers = container_all
     Cactus.containers = container_cactus
     Underground.containers = container_underground
@@ -54,7 +56,7 @@ def main(surface):
 
     player = Dino((50, SCREEN.bottom - 76))
 
-    underground1 = Underground((0,SCREEN.bottom - 44))
+    underground1 = Underground((0, SCREEN.bottom - 44))
     underground2 = Underground((1204, SCREEN.bottom - 44))
 
     clock = pg.time.Clock()
@@ -81,18 +83,20 @@ def main(surface):
 
         if player.action == player.actions[4]:
             player.kill()
-        
-        elif not (player.action == player.actions[0]): 
+
+        elif not (player.action == player.actions[0]):
             container_all.add(underground1, underground2)
-                
+
             for mUnder in container_underground.sprites():
                 if mUnder.rect.x in RANGE_CACTUS:
                     cactu = Cactus((random.randrange(-1200, -100, 150) * -1) + SCREEN_W)
                     container_all.add(cactu)
 
-            for mCactu in pg.sprite.spritecollide(player, container_cactus, False):
-                #player.collide()
-                pass
+            for mCactu in pg.sprite.spritecollide(player, container_cactus, True):
+                # player.collide()
+                mCactu.kill()
+                player.kill()
+                time.sleep(1)
 
         dirty = container_all.draw(surface)
         pg.display.update(dirty)
@@ -100,18 +104,14 @@ def main(surface):
 
     print("Fim do jogo")
 
+
 if __name__ == '__main__':
     if not check_errors():
         sys.exit(-1)
-    
+
     os.environ['SDL_VIDEO_CENTERED'] = '1'
-
     pg.register_quit(pygame_off)
-
     deep_display = pg.display.mode_ok(SCREEN.size, 0, 32)
-
     surface = pg.display.set_mode(SCREEN.size, 0, deep_display)
-
     pg.display.set_caption("Dino game")
-
     main(surface)
