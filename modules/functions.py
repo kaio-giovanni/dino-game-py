@@ -5,7 +5,7 @@ import sys, os, time
 def check_errors():
     errors = pg.init()
     if errors[1] > 0:
-        print("(!) Ops, {0} houve com algum problema...".format(errors[1]))
+        print(f"(!) Ops, houve com algum problema... {errors}")
         return False
     else:
         print("(+) O jogo foi iniciado com sucesso!")

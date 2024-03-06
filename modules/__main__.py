@@ -35,8 +35,8 @@ def main(surface):
     underground_pos_y = SCREEN.bottom - 44
     cactus_pos_y = SCREEN.bottom - 76
 
-    player = Dino(pos=dino_pos,
-                  pos_ground=cactus_pos_y,
+    player = Dino(pos_x=dino_pos[0],
+                  pos_y=dino_pos[1],
                   image_sheet=sprite_sheet[0],
                   containers=container_all)
 

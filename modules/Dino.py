@@ -3,7 +3,7 @@ import pygame as pg
 
 class Dino(pg.sprite.Sprite):
 
-    def __init__(self, pos, pos_ground, image_sheet, containers):
+    def __init__(self, pos_x, pos_y, image_sheet, containers):
         super().__init__(containers)
         self.actions = {0: "stoped",
                         1: "running",
@@ -25,9 +25,8 @@ class Dino(pg.sprite.Sprite):
         self.image_sheet = image_sheet
         self.image_sheet.set_clip(self.states[self.index_states])
         self.image = self.image_sheet.subsurface(self.image_sheet.get_clip())
-        self.rect = self.image.get_rect().move(pos)
-        self.position = pos
-        self.pos_ground = pos_ground
+        self.rect = self.image.get_rect().move(pos_x, pos_y)
+        self.position = pos_x, pos_y
         self.action = self.actions[0]
 
     def __del__(self):
@@ -35,15 +34,16 @@ class Dino(pg.sprite.Sprite):
 
     def update(self):
         if self.action == self.actions[1]:  # running
-            self.rect.y = self.pos_ground
+            self.rect.y = self.position[1]
 
         elif self.action == self.actions[2]:  # run down
-            self.rect.y = self.pos_ground + 17
+            self.rect.y = self.position[1] + 17
 
         elif self.action == self.actions[3]:  # jumping
             self.rect.y -= int(self.jump_value)
-            if self.rect.y > self.pos_ground:
-                self.rect.y = self.pos_ground
+            self.jump_value -= 1
+            if self.rect.y > self.position[1]:
+                self.rect.y = self.position[1]
                 self.action = self.actions[1]
                 self.jump_value = 12
 
