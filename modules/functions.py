@@ -1,11 +1,5 @@
-#############################################
-# FUNCTIONS
-#############################################
-
 import pygame as pg
 import sys, os, time
-
-''' VERIFICANDO A EXISTENCIA DE ERROS'''
 
 
 def check_errors():
@@ -18,23 +12,14 @@ def check_errors():
         return True
 
 
-''' FUNÇÃO FECHAR JOGO'''
-
-
 def quit_game():
     time.sleep(1)
     pg.quit()
     sys.exit(0)
 
 
-''' FUNÇÃO EXECUTADA QUANDO O PYGAME DESLIGAR'''
-
-
 def pygame_off():
     print("\t \t --- O MÓDULO PYGAME FOI DESLIGADO ---")
-
-
-''' FUNÇÃO PARA OBTER INFORMAÇÕES SOBRE O SISTEMA DE JANELAS ATUAL'''
 
 
 def get_info_display():
@@ -46,22 +31,14 @@ def get_info_display():
         print("O pygame nao foi iniciado !!")
 
 
-''' FUNÇÃO PARA CARREGAR IMAGENS EM DISCO'''
-
-
 def carregar_imagem(pasta, nome_imagem):
-    ''' Carrega uma imagem na memória'''
     nome = os.path.join(os.path.curdir, pasta, nome_imagem)
-    ''' os.path.join -> Faz a junção (join) de paths até formar um caminho completo. "Images" é o nome da pasta de imagens '''
     try:
         imagem = pg.image.load(nome)
     except pg.error:
         print("Não foi possivel carregar a imagem: ", nome)
         raise SystemExit
     return imagem, imagem.get_rect()
-
-
-''' FUNÇÃO PARA CARREGAR UMA LISTA DE IMAGENS'''
 
 
 def carregar_imagens(pasta, *nome_imagem):

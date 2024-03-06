@@ -1,11 +1,6 @@
 #!/usr/bin/env python3.8.2
 # -*- coding: utf-8 -*-
 
-#############################################
-# FUNCTION MAIN
-#############################################
-
-''' IMPORTANDO MODULOS'''
 import random
 import time
 
@@ -14,16 +9,12 @@ from .Dino import Dino
 from .Underground import Underground
 from .functions import *
 
-''' VARIAVEIS GLOBAIS'''
 BG_COLOR = pg.Color(250, 250, 250, 255)
 SCREEN_W = 700
 SCREEN_H = 300
 RANGE_CACTUS = range(-1200, -100, 150)
 
-''' CRIA UM OBJ RECT COM O TAMANHO DA TELA'''
 SCREEN = pg.Rect(0, 0, SCREEN_W, SCREEN_H)
-
-''' FUNÇÃO PRINCIPAL '''
 
 
 def main(surface):
@@ -40,29 +31,27 @@ def main(surface):
     container_underground = pg.sprite.Group()
     container_cactus = pg.sprite.Group()
 
-    Underground.imagem = sprite_sheet[0]
-    Cactus.imagem = sprite_sheet[0]
-    Dino.imagem = sprite_sheet[0]
+    dino_pos = (50, SCREEN.bottom - 76)
+    underground_pos_y = SCREEN.bottom - 44
+    cactus_pos_y = SCREEN.bottom - 76
 
-    Cactus.pos_ground = SCREEN.bottom - 76
-    Dino.pos_ground = SCREEN.bottom - 76
+    player = Dino(pos=dino_pos,
+                  pos_ground=cactus_pos_y,
+                  image_sheet=sprite_sheet[0],
+                  containers=container_all)
 
-    Dino.containers = container_all
-    Cactus.containers = container_cactus
-    Underground.containers = container_underground
-
-    Underground.speed = -5
-    Cactus.speed = -5
-
-    player = Dino((50, SCREEN.bottom - 76))
-
-    underground1 = Underground((0, SCREEN.bottom - 44))
-    underground2 = Underground((1204, SCREEN.bottom - 44))
+    underground1 = Underground((0, underground_pos_y),
+                               image_sheet=sprite_sheet[0],
+                               speed=-5,
+                               containers=container_underground)
+    underground2 = Underground((1204, underground_pos_y),
+                               image_sheet=sprite_sheet[0],
+                               speed=-5,
+                               containers=container_underground)
 
     clock = pg.time.Clock()
 
     while player.alive():
-
         container_all.clear(surface, bg_screen)
         container_all.update()
 
@@ -89,8 +78,13 @@ def main(surface):
 
             for mUnder in container_underground.sprites():
                 if mUnder.rect.x in RANGE_CACTUS:
-                    cactu = Cactus((random.randrange(-1200, -100, 150) * -1) + SCREEN_W)
-                    container_all.add(cactu)
+                    cactus_pos_x = (random.randrange(-1200, -100, 150) * -1) + SCREEN_W
+                    cactus = Cactus(pos_x=cactus_pos_x,
+                                    pos_y=cactus_pos_y,
+                                    speed=-5,
+                                    image_sheet=sprite_sheet[0],
+                                    containers=container_cactus)
+                    container_all.add(cactus)
 
             for mCactu in pg.sprite.spritecollide(player, container_cactus, True):
                 # player.collide()
