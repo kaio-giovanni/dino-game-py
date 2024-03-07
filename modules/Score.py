@@ -1,6 +1,6 @@
 import pygame as pg
 
-COLOR = "black"
+COLOR = pg.Color(250, 250, 250, 255)
 
 
 # impact, lucidasans, arialblack, couriernew, verdana, timesnewroman

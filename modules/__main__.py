@@ -1,11 +1,13 @@
 import random
+import sys
 import time
 
-from .Cactus import Cactus
-from .Dino import Dino
-from .Underground import Underground
-from .Score import Score
-from .functions import *
+from modules.Bird import Bird
+from modules.Cactus import Cactus
+from modules.Dino import Dino
+from modules.Underground import Underground
+from modules.Score import Score
+from modules.functions import *
 
 BG_COLOR = pg.Color(250, 250, 250, 255)
 SCREEN_W = 700
@@ -43,9 +45,11 @@ def main(surface: pg.surface.Surface):
     container_all = pg.sprite.RenderUpdates()
     container_underground = pg.sprite.Group()
     container_cactus = pg.sprite.Group()
+    container_bird = pg.sprite.Group()
 
     underground_pos_y = SCREEN.bottom - 44
     cactus_pos_y = SCREEN.bottom - 76
+    bird_positions_y = [SCREEN.bottom - 68, SCREEN.bottom - 100, SCREEN.bottom - 110]
 
     player = Dino((50, SCREEN.bottom - 76),
                   sprite_sheet[0],
@@ -62,7 +66,6 @@ def main(surface: pg.surface.Surface):
     clock = pg.time.Clock()
     framerate = 40
     next_enemy_time = 0
-    next_level_time = 0
     score = 0
 
     while player.alive():
@@ -76,6 +79,7 @@ def main(surface: pg.surface.Surface):
             container_all.add(underground_sprite_1, underground_sprite_2)
             all_cactus = container_cactus.sprites()
 
+            # Create enemies
             if pg.time.get_ticks() > next_enemy_time and len(all_cactus) < 10:
                 cactus_pos_x = SCREEN_W + random.randrange(80, 200, 40)
                 cactus_sprite = Cactus((cactus_pos_x, cactus_pos_y),
@@ -83,6 +87,16 @@ def main(surface: pg.surface.Surface):
                                        container_cactus)
                 container_all.add(cactus_sprite)
                 next_enemy_time += 1250
+
+                if score in range(10, 2000, 10):
+                    bird_pos_x = SCREEN_W + random.randrange(100, 200, 20)
+                    bird_pos_y = random.choice(bird_positions_y)
+                    bird_sprite = Bird((bird_pos_x,bird_pos_y), sprite_sheet[0], container_bird)
+                    container_all.add(bird_sprite)
+
+                    Cactus.speed *= 1.2
+                    Underground.speed *= 1.2
+                    print(f"Increasing the game level to {Cactus.speed}")
 
             for cactus in all_cactus:
                 if cactus.get_pos()[0] < -10:
@@ -96,11 +110,10 @@ def main(surface: pg.surface.Surface):
                 player.kill()
                 quit_game()
 
-            if pg.time.get_ticks() > next_level_time:
-                Cactus.speed *= 1.2
-                Underground.speed *= 1.2
-                next_level_time += 25000
-                print(f"Increasing the game level to {Cactus.speed}")
+            for bird in pg.sprite.spritecollide(player, container_bird, True):
+                bird.kill()
+                player.kill()
+                quit_game()
 
         dirty = container_all.draw(surface)
         pg.display.update(dirty)
@@ -109,8 +122,7 @@ def main(surface: pg.surface.Surface):
 
 
 if __name__ == '__main__':
-    if not check_errors():
-        sys.exit(-1)
+    pg.init()
 
     os.environ['SDL_VIDEO_CENTERED'] = '1'
     pg.register_quit(pygame_off)
