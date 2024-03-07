@@ -1,7 +1,7 @@
 import pygame as pg
 
-
 JUMP_VALUE = 14
+
 
 class Dino(pg.sprite.Sprite):
 
@@ -13,12 +13,12 @@ class Dino(pg.sprite.Sprite):
                         3: "jumping",
                         4: "colliding"
                         }
-        self.states = {0: pg.Rect(39, 3, 46, 49),
-                       1: pg.Rect(891, 1, 46, 49),
-                       2: pg.Rect(847, 1, 46, 49),
-                       3: pg.Rect(936, 1, 46, 49),
-                       4: pg.Rect(980, 1, 46, 49),
-                       5: pg.Rect(1024, 1, 46, 49),
+        self.states = {0: pg.Rect(39, 2, 46, 47),
+                       1: pg.Rect(891, 2, 46, 47),
+                       2: pg.Rect(848, 2, 46, 47),
+                       3: pg.Rect(935, 2, 46, 47), #running
+                       4: pg.Rect(978, 2, 46, 47), #running
+                       5: pg.Rect(1022, 2, 46, 47), #collision
                        6: pg.Rect(1111, 18, 60, 32),
                        7: pg.Rect(1171, 18, 60, 32)
                        }
@@ -37,10 +37,10 @@ class Dino(pg.sprite.Sprite):
 
     def is_dead(self):
         return self.action == self.actions[4]
-    
+
     def is_stopped(self):
         return self.action == self.actions[0]
-    
+
     def get_pos(self):
         return self.position
 
@@ -116,6 +116,6 @@ class Dino(pg.sprite.Sprite):
         else:
             self.index_states += 0.2
         return self.index_states
-    
+
     def has_collided(self, enemy: pg.sprite.Sprite):
         return self.rect.colliderect(enemy.rect)

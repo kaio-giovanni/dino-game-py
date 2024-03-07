@@ -3,7 +3,6 @@ import random
 
 
 class Cactus(pg.sprite.Sprite):
-
     speed = -8
 
     def __init__(self, pos: tuple[int, int], image_sheet: pg.surface.Surface, *groups):
@@ -18,9 +17,8 @@ class Cactus(pg.sprite.Sprite):
             6: pg.Rect(381, 2, 28, 50),
             7: pg.Rect(430, 2, 52, 50)
         }
-        
         self.position = pos
-        self.pos_y_tallest = pos[1] + 14
+        self.pos_y_smallest = pos[1] + 14
         self.image_sheet = image_sheet
         self.image_sheet.set_clip(self.states[random.choice([0, 1, 2, 3, 4, 5, 6, 7])])
         self.image = self.image_sheet.subsurface(self.image_sheet.get_clip())
@@ -31,7 +29,7 @@ class Cactus(pg.sprite.Sprite):
 
     def update(self):
         if self.rect.height == 36:
-            self.rect.y = self.pos_y_tallest
+            self.rect.y = self.pos_y_smallest
         else:
             self.rect.y = self.position[1]
 
@@ -40,4 +38,3 @@ class Cactus(pg.sprite.Sprite):
 
     def get_pos(self):
         return self.position
-

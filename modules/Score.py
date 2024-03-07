@@ -2,7 +2,9 @@ import pygame as pg
 
 COLOR = "black"
 
+
 # impact, lucidasans, arialblack, couriernew, verdana, timesnewroman
+
 
 class Score(pg.sprite.Sprite):
 
@@ -19,7 +21,7 @@ class Score(pg.sprite.Sprite):
 
     def update(self):
         self.image = self.font.render(f"Score {self.score}", True, COLOR)
-    
+
     def set_score(self, score):
         self.score = score
         print(f"SCORE: {self.score}")

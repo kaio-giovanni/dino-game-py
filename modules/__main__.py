@@ -16,7 +16,7 @@ SCREEN = pg.Rect(0, 0, SCREEN_W, SCREEN_H)
 def handle_keyboard_events(player: Dino):
     for event in pg.event.get():
         if event.type == pg.QUIT:
-                quit_game()
+            quit_game()
         elif event.type == pg.KEYDOWN:
             keys = pg.key.get_pressed()
 
@@ -52,11 +52,11 @@ def main(surface: pg.surface.Surface):
                   container_all)
 
     underground_sprite_1 = Underground((0, underground_pos_y),
-                               sprite_sheet[0],
-                               container_underground)
+                                       sprite_sheet[0],
+                                       container_underground)
     underground_sprite_2 = Underground((1204, underground_pos_y),
-                               sprite_sheet[0],
-                               container_underground)
+                                       sprite_sheet[0],
+                                       container_underground)
     score_sprite = Score((SCREEN_W - 100, 12), container_all)
 
     clock = pg.time.Clock()
@@ -69,7 +69,7 @@ def main(surface: pg.surface.Surface):
         container_all.clear(surface, bg_screen)
         container_all.update()
         handle_keyboard_events(player=player)
-        
+
         if player.is_dead():
             player.kill()
         elif not (player.is_stopped()):
@@ -79,11 +79,11 @@ def main(surface: pg.surface.Surface):
             if pg.time.get_ticks() > next_enemy_time and len(all_cactus) < 10:
                 cactus_pos_x = SCREEN_W + random.randrange(80, 200, 40)
                 cactus_sprite = Cactus((cactus_pos_x, cactus_pos_y),
-                                sprite_sheet[0],
-                                container_cactus)
+                                       sprite_sheet[0],
+                                       container_cactus)
                 container_all.add(cactus_sprite)
                 next_enemy_time += 1250
-                    
+
             for cactus in all_cactus:
                 if cactus.get_pos()[0] < -10:
                     score += 10
@@ -94,7 +94,7 @@ def main(surface: pg.surface.Surface):
             for cactus in pg.sprite.spritecollide(player, container_cactus, True):
                 cactus.kill()
                 player.kill()
-                time.sleep(1)
+                quit_game()
 
             if pg.time.get_ticks() > next_level_time:
                 Cactus.speed *= 1.2

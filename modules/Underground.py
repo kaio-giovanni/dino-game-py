@@ -2,10 +2,9 @@ import pygame as pg
 
 
 class Underground(pg.sprite.Sprite):
-
     speed = -8
 
-    def __init__(self, pos: tuple[int, int],image_sheet: pg.surface.Surface, *groups) -> None:
+    def __init__(self, pos: tuple[int, int], image_sheet: pg.surface.Surface, *groups) -> None:
         super().__init__(*groups)
         self.states = {
             0: pg.Rect(0, 52, 1204, 16)
@@ -14,7 +13,6 @@ class Underground(pg.sprite.Sprite):
         self.image_sheet.set_clip(self.states[0])
         self.image = self.image_sheet.subsurface(self.image_sheet.get_clip())
         self.rect = self.image.get_rect().move(pos)
-        
 
     def __del__(self):
         print("Del ground sprite")
