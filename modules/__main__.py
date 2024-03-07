@@ -1,23 +1,36 @@
-#!/usr/bin/env python3.8.2
-# -*- coding: utf-8 -*-
-
 import random
 import time
 
 from .Cactus import Cactus
 from .Dino import Dino
 from .Underground import Underground
+from .Score import Score
 from .functions import *
 
 BG_COLOR = pg.Color(250, 250, 250, 255)
 SCREEN_W = 700
 SCREEN_H = 300
-RANGE_CACTUS = range(-1200, -100, 150)
-
 SCREEN = pg.Rect(0, 0, SCREEN_W, SCREEN_H)
 
 
-def main(surface):
+def handle_keyboard_events(player: Dino):
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+                quit_game()
+        elif event.type == pg.KEYDOWN:
+            keys = pg.key.get_pressed()
+
+            if keys[pg.K_ESCAPE]:
+                quit_game()
+            elif keys[pg.K_SPACE] or keys[pg.K_UP]:
+                player.jump()
+            elif keys[pg.K_DOWN]:
+                player.run_down()
+        elif event.type == pg.KEYUP:
+            player.run()
+
+
+def main(surface: pg.surface.Surface):
     surface.fill(BG_COLOR)
     sprite_sheet = carregar_imagem("assets", "sprite-sheet.png")
     bg_screen = pg.Surface(SCREEN.size)
@@ -31,71 +44,67 @@ def main(surface):
     container_underground = pg.sprite.Group()
     container_cactus = pg.sprite.Group()
 
-    dino_pos = (50, SCREEN.bottom - 76)
     underground_pos_y = SCREEN.bottom - 44
     cactus_pos_y = SCREEN.bottom - 76
 
-    player = Dino(pos_x=dino_pos[0],
-                  pos_y=dino_pos[1],
-                  image_sheet=sprite_sheet[0],
-                  containers=container_all)
+    player = Dino((50, SCREEN.bottom - 76),
+                  sprite_sheet[0],
+                  container_all)
 
-    underground1 = Underground((0, underground_pos_y),
-                               image_sheet=sprite_sheet[0],
-                               speed=-5,
-                               containers=container_underground)
-    underground2 = Underground((1204, underground_pos_y),
-                               image_sheet=sprite_sheet[0],
-                               speed=-5,
-                               containers=container_underground)
+    underground_sprite_1 = Underground((0, underground_pos_y),
+                               sprite_sheet[0],
+                               container_underground)
+    underground_sprite_2 = Underground((1204, underground_pos_y),
+                               sprite_sheet[0],
+                               container_underground)
+    score_sprite = Score((SCREEN_W - 100, 12), container_all)
 
     clock = pg.time.Clock()
+    framerate = 40
+    next_enemy_time = 0
+    next_level_time = 0
+    score = 0
 
     while player.alive():
         container_all.clear(surface, bg_screen)
         container_all.update()
-
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                quit_game()
-            elif event.type == pg.KEYDOWN:
-                keys = pg.key.get_pressed()
-
-                if keys[pg.K_ESCAPE]:
-                    quit_game()
-                elif keys[pg.K_SPACE] or keys[pg.K_UP]:
-                    player.jump()
-                elif keys[pg.K_DOWN]:
-                    player.run_down()
-            elif event.type == pg.KEYUP:
-                player.run()
-
-        if player.action == player.actions[4]:
+        handle_keyboard_events(player=player)
+        
+        if player.is_dead():
             player.kill()
+        elif not (player.is_stopped()):
+            container_all.add(underground_sprite_1, underground_sprite_2)
+            all_cactus = container_cactus.sprites()
 
-        elif not (player.action == player.actions[0]):
-            container_all.add(underground1, underground2)
+            if pg.time.get_ticks() > next_enemy_time and len(all_cactus) < 10:
+                cactus_pos_x = SCREEN_W + random.randrange(80, 200, 40)
+                cactus_sprite = Cactus((cactus_pos_x, cactus_pos_y),
+                                sprite_sheet[0],
+                                container_cactus)
+                container_all.add(cactus_sprite)
+                next_enemy_time += 1250
+                    
+            for cactus in all_cactus:
+                if cactus.get_pos()[0] < -10:
+                    score += 10
+                    score_sprite.set_score(score)
+                    cactus.kill()
+                    del cactus
 
-            for mUnder in container_underground.sprites():
-                if mUnder.rect.x in RANGE_CACTUS:
-                    cactus_pos_x = (random.randrange(-1200, -100, 150) * -1) + SCREEN_W
-                    cactus = Cactus(pos_x=cactus_pos_x,
-                                    pos_y=cactus_pos_y,
-                                    speed=-5,
-                                    image_sheet=sprite_sheet[0],
-                                    containers=container_cactus)
-                    container_all.add(cactus)
-
-            for mCactu in pg.sprite.spritecollide(player, container_cactus, True):
-                # player.collide()
-                mCactu.kill()
+            for cactus in pg.sprite.spritecollide(player, container_cactus, True):
+                cactus.kill()
                 player.kill()
                 time.sleep(1)
 
+            if pg.time.get_ticks() > next_level_time:
+                Cactus.speed *= 1.2
+                Underground.speed *= 1.2
+                next_level_time += 25000
+                print(f"Increasing the game level to {Cactus.speed}")
+
         dirty = container_all.draw(surface)
         pg.display.update(dirty)
-        clock.tick(30)
-
+        clock.tick(framerate)
     print("Fim do jogo")
 
 

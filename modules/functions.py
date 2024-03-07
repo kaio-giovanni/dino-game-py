@@ -46,3 +46,4 @@ def carregar_imagens(pasta, *nome_imagem):
     for img in nome_imagem:
         imgs.append(carregar_imagem(pasta, img)[0])
     return imgs
+
